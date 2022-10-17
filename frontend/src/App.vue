@@ -1,26 +1,28 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="common-layout">
+    <el-header>
+      <NavBar />
+    </el-header>
+    <el-container>
+      <TodoItem title="12332" description="description">
+      </TodoItem>
+    </el-container>
+    <el-footer>
+      Footer
+    </el-footer>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TodoItem from './components/TodoItem.vue'
+import NavBar from "@/components/NavBar";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TodoItem,
+    NavBar
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
