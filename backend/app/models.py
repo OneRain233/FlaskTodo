@@ -2,8 +2,6 @@ from app import db
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, DateTimeField, IntegerField, BooleanField
 from wtforms.validators import DataRequired, Length
-import json
-import datetime
 
 
 class User(db.Model):
@@ -30,16 +28,15 @@ class Item(db.Model):
     completed_date = db.Column(db.DateTime)
 
     def __json__(self):
-        return json.dumps({
+        return {
             'id': self.id,
             'title': self.title,
             'description': self.description,
-            'date': datetime.datetime.strftime(self.date, '%Y-%m-%d %H:%M:%S'),
+            'date': self.date,
             'user_id': self.user_id,
             'completed': self.completed,
-            'completed_date': datetime.datetime.strftime(self.completed_date,
-                                                         '%Y-%m-%d %H:%M:%S') if self.completed_date else None
-        })
+            'completed_date': self.completed_date
+        }
 
 
 class ItemForm(FlaskForm):
