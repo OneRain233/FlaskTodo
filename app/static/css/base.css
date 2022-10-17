@@ -1,0 +1,53 @@
+body {
+    /*background-image: url("/static/img/bg.jpg");*/
+    background: url("/static/img/bg.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+.bg-op {
+    /*filter: blur(5px);*/
+    opacity: 0.5;
+}
+
+.bg-nop{
+    opacity: 1;
+}
+
+#addForm {
+    color: #fff;
+    margin: 0 auto;
+    width: 50%;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    display: none;
+}
+/*!* id = todo_list_ul *!*/
+/*#todo_list_ul {*/
+/*    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);*/
+/*    border-radius: 2px;*/
+/*    background-color: #fff;*/
+/*    margin: auto auto;*/
+/*    max-width: 550px;*/
+
+/*}*/
+
+/*!* class = todo_list_li *!*/
+/*.todo_list_li {*/
+/*    list-style-type: none;*/
+/*    padding: 15px 15px 15px 60px;*/
+/*    position: relative;*/
+/*    font-size: 24px;*/
+/*    border-bottom: 1px solid #ededed;*/
+/*}*/
+
+

@@ -1,17 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TODO LIST</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
     <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.staticfile.org/semantic-ui/2.2.13/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/semantic-ui/2.2.13/semantic.min.css">
+    <!--    boostrap-->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.2.2/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 
 </head>
 <body>
-    {% block content %}
-    {% endblock %}
-    
+<div class="container-fluid">
+    <div class="ui inverted menu text-capitalize">
+        <div class="active item">Link</div>
+        <a class="item">Link</a>
+        <div class="ui dropdown item" tabindex="0">
+            Dropdown
+            <i class="dropdown icon"></i>
+            <div class="menu transition hidden" tabindex="-1">
+                <div class="item">Action</div>
+                <div class="item">Another Action</div>
+                <div class="item">Something else here</div>
+                <div class="divider"></div>
+                <div class="item">Separated Link</div>
+                <div class="divider"></div>
+                <div class="item">One more separated link</div>
+            </div>
+        </div>
+        <div class="right menu">
+            <div class="item">
+                <div class="ui action left icon input">
+                    <i class="search icon"></i>
+                    <input type="text" placeholder="Search">
+                    <button class="ui button">Submit</button>
+                </div>
+            </div>
+            <div class="ui dropdown item" tabindex="0">
+                Dropdown Left<i class="dropdown icon"></i>
+                <div class="menu" tabindex="-1">
+                    <a class="item">Link</a>
+                    <a class="item">Link</a>
+                    <div class="divider"></div>
+                    <div class="header">Header</div>
+                    <div class="item">
+                        <i class="dropdown icon"></i>
+                        Sub Menu
+                        <div class="menu">
+                            <a class="item">Link</a>
+                            <div class="item">
+                                <i class="dropdown icon"></i>
+                                Sub Sub Menu
+                                <div class="menu">
+                                    <a class="item">Link</a>
+                                    <a class="item">Link</a>
+                                </div>
+                            </div>
+                            <a class="item">Link</a>
+                        </div>
+                    </div>
+                    <a class="item">Link</a>
+                </div>
+            </div>
+            <a class="item">Link</a>
+        </div>
+    </div>
+    <div id="flash"></div>
+
+</div>
+{% block content %}
+{% endblock %}
+
 </body>
 </html>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+

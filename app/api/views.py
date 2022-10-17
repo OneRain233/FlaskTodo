@@ -70,7 +70,8 @@ def todo_id(item_id):
 def add():
     title = request.form['title']
     description = request.form['description']
-    date = datetime.datetime.now()
+    date = request.form['date']
+    date = datetime.datetime.strptime(date, '%Y-%m-%d')
     user_id = 1
     completed = False
     completed_date = None
