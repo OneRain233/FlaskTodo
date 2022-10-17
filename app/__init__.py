@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 from flask_bootstrap import Bootstrap
+import datetime
 
 # app = Flask(__name__)
 # app.config.from_pyfile('config.py')
@@ -10,6 +11,7 @@ db = SQLAlchemy()
 csrf = CSRFProtect()
 migrate = Migrate()
 bootstrap = Bootstrap()
+
 
 def create_app():
     app = Flask(__name__)
