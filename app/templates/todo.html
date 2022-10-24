@@ -1,236 +1,151 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <div class="container-fluid text-center glyphicon-align-center" style="margin-bottom: 10px">
-        <button id="get" class="ui big inverted blue button">Get Items</button>
-        <button id="add" class="ui big inverted blue button">Add Item</button>
-    </div>
-<!--    float form for adding item-->
-    <div class="container-fluid" id="add-form" style="display: none">
-        <form class="ui form" action="/api/add" method="POST">
-            <div class="field">
-                <label for="title">Title</label>
-                <input type="text" name="title" id="title" placeholder="Title">
-            </div>
-            <div class="field">
-                <label for="description">Description</label>
-                <input type="text" name="description" id="description" placeholder="Description">
-            </div>
-            <div class="field">
-                <label for="date">Date</label>
-                <input type="date" name="date" id="date" placeholder="Date">
-            </div>
-            <div class="hidden">
-<!--            CSRF-->
-                <input type="text" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
-            </div>
-            <button class="ui button" type="submit">Submit</button>
-        </form>
-    </div>
+<div class="ui container">
+    <div class="ui container">
+        <div class="ui container">
+            <div class="ui card text-center" id="add-form" style="margin-bottom: 10px; padding: 10px; display: none;">
+                <div class="ui form">
+                    <div class="field">
+                        <label class="card-header" for="title">Title</label>
+                        <input type="text" name="title" id="title" placeholder="Title">
+                    </div>
+                    <div class="field">
+                        <label class="card-header" for="description">Description</label>
+                        <input type="text" name="description" id="description" placeholder="Description">
+                    </div>
+                    <div class="field">
+                        <label class="card-header" for="date">Date</label>
+                        <input type="date" name="date" id="date" placeholder="Date">
+                    </div>
+                    <div class="field">
+                        <label class="card-header" for="date">Time</label>
+                        <div class="ui input left icon">
+                            <select name="hour" id="hour">
+                                {% for i in range(0, 24) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="minute" id="minute">
+                                {% for i in range(0, 60) %}
+                                <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-
-
-    <div class="card text-center">
-        <div class="card-header">
-            <ul class="nav nav-pills card-header-pills">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Active</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled">Disabled</a>
-                </li>
-            </ul>
-        </div>
-        <div class="card-body">
-            <div id="todo_list" class="ui four cards">
-
+                    </div>
+                    <button class="ui button" type="submit" id="add-submit">Submit</button>
+                </div>
             </div>
         </div>
+        <div class="ui grid two column ">
+            <div class="ui statistics">
+                <div class="red statistic">
+                    <div class="value" id="total-items">
+                        0
+                    </div>
+                    <div class="label">
+                        Total
+                    </div>
+                </div>
+                <div class="green statistic">
+                    <div class="value" id="completed-items">
+                        0
+                    </div>
+                    <div class="label">
+                        Completed
+                    </div>
+                </div>
+                <div class="blue statistic">
+                    <div class="value" id="incomplete-items">
+                        0
+                    </div>
+                    <div class="label">
+                        Incomplete
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui column">
+                <!--                <div class="ui card">-->
+                <!--                    <div class="card-header">-->
+                <div class="ui buttons">
+                    <div class=" column">
+                        <!--                        <a class="nav-link active" id="all-btn">ALL</a>-->
+                        <button id="all-btn" class="fluid ui inverted blue button">ALL</button>
+                    </div>
+                    <div class="column">
+                        <!--                        <a class="nav-link" id="complete-btn">COMPLETED</a>-->
+                        <button id="complete-btn" class="fluid ui inverted blue button">COMPLETED</button>
+                    </div>
+                    <div class="column">
+                        <!--                        <a class="nav-link" id="incomplete-btn">INCOMPLETED</a>-->
+                        <button id="incomplete-btn" class="fluid ui inverted blue button">INCOMPLETED</button>
+                    </div>
+                    <div class="column">
+                        <!--                    <div class="container-fluid text-center glyphicon-align-center" style="margin-bottom: 10px">-->
+                        <button id="get" class="fluid ui inverted blue button">Get Items</button>
+
+                        <!--                    </div>-->
+                    </div>
+                    <div class="column">
+                        <button id="add" class="fluid ui inverted blue button">Add Item</button>
+                    </div>
+
+                </div>
+                <!--                    </div>-->
+                <!--                </div>-->
+            </div>
+
+        </div>
+        <div class="ui container">
+
+            <!--                        <div class="ui container column">-->
+            <!--                            &lt;!&ndash;                <div class="ui card">&ndash;&gt;-->
+            <!--                            &lt;!&ndash;                    <div class="card-header">&ndash;&gt;-->
+            <!--                            <div class="ui column">-->
+            <!--                                <div class="column">-->
+            <!--            &lt;!&ndash;                        <a class="nav-link active" id="all-btn">ALL</a>&ndash;&gt;-->
+            <!--                                    <button id="all-btn" class="ui inverted blue button">ALL</button>-->
+            <!--                                </div>-->
+            <!--                                <div class="column">-->
+            <!--            &lt;!&ndash;                        <a class="nav-link" id="complete-btn">COMPLETED</a>&ndash;&gt;-->
+            <!--                                    <button id="complete-btn" class="ui inverted blue button">COMPLETED</button>-->
+            <!--                                </div>-->
+            <!--                                <div class="column">-->
+            <!--            &lt;!&ndash;                        <a class="nav-link" id="incomplete-btn">INCOMPLETED</a>&ndash;&gt;-->
+            <!--                                    <button id="incomplete-btn" class="ui inverted blue button">INCOMPLETED</button>-->
+            <!--                                </div>-->
+            <!--                                <div class="column">-->
+            <!--                                    &lt;!&ndash;                    <div class="container-fluid text-center glyphicon-align-center" style="margin-bottom: 10px">&ndash;&gt;-->
+            <!--                                    <button id="get" class="ui inverted blue button">Get Items</button>-->
+
+            <!--                                    &lt;!&ndash;                    </div>&ndash;&gt;-->
+            <!--                                </div>-->
+            <!--                                <div class="column">-->
+            <!--                                    <button id="add" class="ui inverted blue button">Add Item</button>-->
+            <!--                                </div>-->
+
+            <!--                            </div>-->
+            <!--                            &lt;!&ndash;                    </div>&ndash;&gt;-->
+            <!--                            &lt;!&ndash;                </div>&ndash;&gt;-->
+            <!--                        </div>-->
+
+
+        </div>
+        <div class="ui container">
+
+            <div class="card-body">
+                <div id="todo_list" class="ui grid">
+
+                </div>
+                <div id="edit_form"></div>
+            </div>
+        </div>
+
     </div>
 </div>
-<script>
-
-    function getItems() {
-        $("#todo_list").html("");
-        $.ajax({
-            url: "/api/todo",
-            type: "get",
-            success: function (data) {
-                console.log(data);
-                data = JSON.parse(data);
-                if (data.status !== "success") {
-                    alert(data.message);
-                }
-                var items = data.items;
-                var html = "";
-                for (var i = 0; i < items.length; i++) {
-                    var item = JSON.parse(items[i]);
-                    console.log(item);
-                    var new_element = document.createElement("li");
-
-                    $("#todo_list").append(
-                        `
-                        <div class="ui card">
-                            <div class="content">
-                                <div class="header">${item.title}</div>
-                                <div class="description">${item.description}</div>
-                            </div>
-                            <div class="ui two bottom attached basic buttons">
-                                <div class="ui button">
-                                    ${item.date}
-                                </div>
-                                <div id="${item.id}" class="complete ui big inverted button  ${item.completed === true ? "green" : "red"}">
-                                    ${item.completed === true ? "DONE" : item.date}
-                                </div>
-                            </div>
-                        </div>
-                        `
-                    );
-                }
-                // $("#todo_list").html(html);
-
-            }
-        })
-    }
-
-    function addItem() {
-    }
-
-
-    $(function () {
-        $("#get").click(function () {
-            getItems();
-        })
-
-    })
-
-    $(document).on("load", getItems());
-    $(document).on("click", ".complete", function () {
-        var id = $(this).attr("id");
-        $.ajax({
-            url: "/api/complete",
-            type: "post",
-            data: {
-                id: id,
-                csrf_token: "{{ csrf_token() }}"
-            },
-            success: function (data) {
-                console.log(data);
-                data = JSON.parse(data);
-                if (data.status !== "success") {
-                    alert(data.message);
-                }
-                // create alert here
-                // const alertPlace = document.getElementById("flash");
-                // alertPlace.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert">
-                // <strong>Success!</strong> ${data.message}
-                // <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                // </div>`;
-                // createToast(data.message);
-                Toastify({
-                    text: data.message,
-                    duration: 3000,
-                    newWindow: true,
-                    close: true,
-                    gravity: "bottom", // `top` or `bottom`
-                    position: "right", // `left`, `center` or `right`
-                    stopOnFocus: true, // Prevents dismissing of toast on hover
-                    style: {
-                        background: "linear-gradient(to right, #00b09b, #96c93d)",
-                    },
-                    onClick: function () {
-                    } // Callback after click
-                }).showToast();
-                $("#get").click();
-            }
-        })
-    })
-    $(document).on("click", "#add-form", function () {
-        $("#addForm").css("display", "block");
-    })
-    $(document).on("click", ".delete", function () {
-        var id = $(this).attr("id");
-        $.ajax({
-            url: "/api/delete",
-            type: "post",
-            data: {
-                id: id,
-                csrf_token: "{{ csrf_token() }}"
-            },
-            success: function (data) {
-                console.log(data);
-                data = JSON.parse(data);
-                if (data.status !== "success") {
-                    alert(data.message);
-                }
-                Toastify({
-                    text: data.message,
-                    duration: 3000,
-                    newWindow: true,
-                    close: true,
-                    gravity: "bottom", // `top` or `bottom`
-                    position: "right", // `left`, `center` or `right`
-                    stopOnFocus: true, // Prevents dismissing of toast on hover
-                    style: {
-                        background: "linear-gradient(to right, #00b09b, #96c93d)",
-                    },
-                    onClick: function () {
-                    } // Callback after click
-                }).showToast();
-                $("#get").click();
-            }
-        })
-    })
-
-    // create toast message
-    function createToast(message) {
-        // <div className="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        //     <div className="toast-header">
-        //         <img src="..." className="rounded me-2" alt="...">
-        //             <strong className="me-auto">Bootstrap</strong>
-        //             <small className="text-muted">just now</small>
-        //             <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        //     </div>
-        //     <div className="toast-body">
-        //         See? Just like this.
-        //     </div>
-        // </div>
-        //
-        // <div className="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        //     <div className="toast-header">
-        //         <img src="..." className="rounded me-2" alt="...">
-        //             <strong className="me-auto">Bootstrap</strong>
-        //             <small className="text-muted">2 seconds ago</small>
-        //             <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        //     </div>
-        //     <div className="toast-body">
-        //         Heads up, toasts will stack automatically
-        //     </div>
-        // </div>
-        var t = `  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                  <strong class="me-auto">Bootstrap</strong>
-                  <small class="text-muted">just now</small>
-                  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                  See? Just like this.
-                </div>
-              </div>`;
-        $(".toast-container").append(t);
-        const toastElList = [].slice.call(document.querySelectorAll('.toast-container'))
-        const toastList = toastElList.map(function (toastEl) {
-            return new bootstrap.Toast(toastEl)
-        })
-        toastList.forEach(toast => toast.show())
-    }
-
-
-</script>
+<script src="{{url_for('static', filename='js/todo.js')}}"></script>
 
 {% endblock %}
 

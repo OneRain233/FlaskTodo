@@ -41,12 +41,22 @@ def todo():
             'items': [item.__json__() for item in items]})
     elif request.method == 'POST':
         if_complete = request.form.get('completed')
+        order = request.form.get('order')
+
         if if_complete == 'true':
             items = Item.query.filter_by(completed=True).all()
         elif if_complete == 'false':
             items = Item.query.filter_by(completed=False).all()
         else:
             items = Item.query.all()
+
+        if order == 'asc':
+            items = sorted(items, key=lambda item: item.date)
+        elif order == 'desc':
+            items = sorted(items, key=lambda item: item.date, reverse=True)
+        else:
+            pass
+
         return json.dumps({
             'status': 'success',
             'message': 'item pulled',
@@ -71,19 +81,31 @@ def add():
     title = request.form['title']
     description = request.form['description']
     date = request.form['date']
-    date = datetime.datetime.strptime(date, '%Y-%m-%d')
+    try:
+        date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
+    except ValueError:
+        return {
+                   'status': 'error',
+                   'message': 'date format error'
+               }, 400
     user_id = 1
     completed = False
     completed_date = None
     item = Item(title=title, description=description, date=date,
                 user_id=user_id, completed=completed,
                 completed_date=completed_date)
-    db.session.add(item)
-    db.session.commit()
-    return json.dumps({
-        'status': 'success',
-        'message': 'item added'
-    })
+    try:
+        db.session.add(item)
+        db.session.commit()
+        return {
+                   'status': 'success',
+                   'message': 'item added'
+               }, 201
+    except Exception as e:
+        return {
+                   'status': 'error',
+                   'message': str(e)
+               }, 400
 
 
 @api.route('/delete', methods=["POST"])
@@ -161,4 +183,53 @@ def incomplete():
     return json.dumps({
         'status': 'success',
         'message': 'item marked as incomplete'
+    })
+
+
+@api.route('/statistics')
+def statistics():
+    total = Item.query.count()
+    completed = Item.query.filter_by(completed=True).count()
+    incomplete1 = Item.query.filter_by(completed=False).count()
+    return json.dumps({
+        'status': 'success',
+        'message': 'statistics pulled',
+        'data': {
+            'total': total,
+            'completed': completed,
+            'incomplete': incomplete1
+        }
+
+    })
+
+
+@api.route('/recent')
+def recent():
+    items = Item.query.order_by(Item.date.desc()).limit(1).all()
+    return json.dumps({
+        'status': 'success',
+        'message': 'recent items pulled',
+        'items': [item.__json__() for item in items]
+    })
+
+
+@api.route("/edit", methods=["POST"])
+def edit():
+    item_id = request.form.get("id")
+    item = Item.query.filter_by(id=item_id).first()
+    item.title = request.form.get("title")
+    item.description = request.form.get("description")
+    date = request.form.get("date")
+    try:
+        date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
+    except ValueError:
+        return {
+                   'status': 'error',
+                   'message': 'date format error'
+               }, 400
+    item.date = date
+    db.session.commit()
+    return json.dumps({
+        'status': 'success',
+        'message': 'item updated'
     })

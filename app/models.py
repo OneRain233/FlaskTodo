@@ -18,8 +18,8 @@ class User(db.Model):
 class Item(db.Model):
     # api list item
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), unique=True, nullable=False)
-    description = db.Column(db.String(120), unique=True, nullable=False)
+    title = db.Column(db.String(80), nullable=False)
+    description = db.Column(db.String(120), nullable=False)
     date = db.Column(db.DateTime, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),

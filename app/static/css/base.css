@@ -1,13 +1,13 @@
 body {
     /*background-image: url("/static/img/bg.jpg");*/
-    background: url("/static/img/bg.jpg") no-repeat center center fixed;
+    /*background: url("/static/img/bg.jpg") no-repeat center center fixed;*/
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
-    color: #fff;
+    /*color: #fff;*/
     line-height: 1.5;
     margin: 0;
     padding: 0;
@@ -31,6 +31,15 @@ body {
     border-radius: 10px;
     display: none;
 }
+
+#complete-card {
+    background-color: #90d098;
+}
+
+#incomplete-card {
+    background-color: #f5a9a9;
+}
+
 /*!* id = todo_list_ul *!*/
 /*#todo_list_ul {*/
 /*    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);*/
