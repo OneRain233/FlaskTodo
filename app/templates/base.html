@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>TODO LIST</title>
-<!--    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.2.2/css/bootstrap.min.css">-->
-<!--    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.2/js/bootstrap.min.js"></script>-->
+    <!--    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.2.2/css/bootstrap.min.css">-->
+    <!--    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.2/js/bootstrap.min.js"></script>-->
     <script
             src="https://code.jquery.com/jquery-3.1.1.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -18,6 +18,10 @@
     <!--    boostrap-->
 
 
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <!--    Time picker-->
@@ -25,23 +29,10 @@
     <script src="{{ url_for('static', filename='js/anime.min.js') }}"></script>
 </head>
 <body>
-<div class="container">
+<div class="ui">
     <div class="ui inverted menu text-capitalize">
         <div class="active item">INDEX</div>
         <a class="item">Statics</a>
-        <!--        <div class="ui dropdown item" tabindex="0">-->
-        <!--            Dropdown-->
-        <!--            <i class="dropdown icon"></i>-->
-        <!--            <div class="menu transition hidden" tabindex="-1">-->
-        <!--                <div class="item">Action</div>-->
-        <!--                <div class="item">Another Action</div>-->
-        <!--                <div class="item">Something else here</div>-->
-        <!--                <div class="divider"></div>-->
-        <!--                <div class="item">Separated Link</div>-->
-        <!--                <div class="divider"></div>-->
-        <!--                <div class="item">One more separated link</div>-->
-        <!--            </div>-->
-        <!--        </div>-->
         <div class="right menu">
             <div class="item">
                 <div class="ui action left icon input">
@@ -79,10 +70,7 @@
             <a class="item">Link</a>
         </div>
     </div>
-
-
-    <div id="flash"></div>
-
+    <br/>
 </div>
 {% block content %}
 {% endblock %}

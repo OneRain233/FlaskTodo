@@ -3,43 +3,11 @@
 {% block content %}
 <div class="ui container">
     <div class="ui container">
+        <div class="ui container" id="add-form-placeholder"></div>
+        <div class="ui container" id="add-module-placeholder"></div>
+        <div class="ui container" id="detail-placeholder"></div>
         <div class="ui container">
-            <div class="ui card text-center" id="add-form" style="margin-bottom: 10px; padding: 10px; display: none;">
-                <div class="ui form">
-                    <div class="field">
-                        <label class="card-header" for="title">Title</label>
-                        <input type="text" name="title" id="title" placeholder="Title">
-                    </div>
-                    <div class="field">
-                        <label class="card-header" for="description">Description</label>
-                        <input type="text" name="description" id="description" placeholder="Description">
-                    </div>
-                    <div class="field">
-                        <label class="card-header" for="date">Date</label>
-                        <input type="date" name="date" id="date" placeholder="Date">
-                    </div>
-                    <div class="field">
-                        <label class="card-header" for="date">Time</label>
-                        <div class="ui input left icon">
-                            <select name="hour" id="hour">
-                                {% for i in range(0, 24) %}
-                                <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
-                            <select name="minute" id="minute">
-                                {% for i in range(0, 60) %}
-                                <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                    </div>
-                    <button class="ui button" type="submit" id="add-submit">Submit</button>
-                </div>
-            </div>
-        </div>
-        <div class="ui grid two column ">
-            <div class="ui statistics">
+            <div class="ui three statistics">
                 <div class="red statistic">
                     <div class="value" id="total-items">
                         0
@@ -66,84 +34,67 @@
                 </div>
             </div>
 
-            <div class="ui column">
+        </div>
+        <div class="ui container todolist-container">
+            <div class="ui attached buttons">
                 <!--                <div class="ui card">-->
                 <!--                    <div class="card-header">-->
-                <div class="ui buttons">
-                    <div class=" column">
-                        <!--                        <a class="nav-link active" id="all-btn">ALL</a>-->
-                        <button id="all-btn" class="fluid ui inverted blue button">ALL</button>
-                    </div>
-                    <div class="column">
-                        <!--                        <a class="nav-link" id="complete-btn">COMPLETED</a>-->
-                        <button id="complete-btn" class="fluid ui inverted blue button">COMPLETED</button>
-                    </div>
-                    <div class="column">
-                        <!--                        <a class="nav-link" id="incomplete-btn">INCOMPLETED</a>-->
-                        <button id="incomplete-btn" class="fluid ui inverted blue button">INCOMPLETED</button>
-                    </div>
-                    <div class="column">
-                        <!--                    <div class="container-fluid text-center glyphicon-align-center" style="margin-bottom: 10px">-->
-                        <button id="get" class="fluid ui inverted blue button">Get Items</button>
 
-                        <!--                    </div>-->
-                    </div>
-                    <div class="column">
-                        <button id="add" class="fluid ui inverted blue button">Add Item</button>
-                    </div>
-
-                </div>
-                <!--                    </div>-->
+                <!--                <div class="column">-->
+                <!--                        <a class="nav-link active" id="all-btn">ALL</a>-->
+                <!--                    <button id="all-btn" class=" ui inverted blue button">ALL</button>-->
                 <!--                </div>-->
-            </div>
-
-        </div>
-        <div class="ui container">
-
-            <!--                        <div class="ui container column">-->
-            <!--                            &lt;!&ndash;                <div class="ui card">&ndash;&gt;-->
-            <!--                            &lt;!&ndash;                    <div class="card-header">&ndash;&gt;-->
-            <!--                            <div class="ui column">-->
-            <!--                                <div class="column">-->
-            <!--            &lt;!&ndash;                        <a class="nav-link active" id="all-btn">ALL</a>&ndash;&gt;-->
-            <!--                                    <button id="all-btn" class="ui inverted blue button">ALL</button>-->
-            <!--                                </div>-->
-            <!--                                <div class="column">-->
-            <!--            &lt;!&ndash;                        <a class="nav-link" id="complete-btn">COMPLETED</a>&ndash;&gt;-->
-            <!--                                    <button id="complete-btn" class="ui inverted blue button">COMPLETED</button>-->
-            <!--                                </div>-->
-            <!--                                <div class="column">-->
-            <!--            &lt;!&ndash;                        <a class="nav-link" id="incomplete-btn">INCOMPLETED</a>&ndash;&gt;-->
-            <!--                                    <button id="incomplete-btn" class="ui inverted blue button">INCOMPLETED</button>-->
-            <!--                                </div>-->
-            <!--                                <div class="column">-->
-            <!--                                    &lt;!&ndash;                    <div class="container-fluid text-center glyphicon-align-center" style="margin-bottom: 10px">&ndash;&gt;-->
-            <!--                                    <button id="get" class="ui inverted blue button">Get Items</button>-->
-
-            <!--                                    &lt;!&ndash;                    </div>&ndash;&gt;-->
-            <!--                                </div>-->
-            <!--                                <div class="column">-->
-            <!--                                    <button id="add" class="ui inverted blue button">Add Item</button>-->
-            <!--                                </div>-->
-
-            <!--                            </div>-->
-            <!--                            &lt;!&ndash;                    </div>&ndash;&gt;-->
-            <!--                            &lt;!&ndash;                </div>&ndash;&gt;-->
-            <!--                        </div>-->
-
-
-        </div>
-        <div class="ui container">
-
-            <div class="card-body">
-                <div id="todo_list" class="ui grid">
-
+                <!--                <div class="column">-->
+                <!--                        <a class="nav-link" id="complete-btn">COMPLETED</a>-->
+                <!--                    <button id="complete-btn" class=" ui inverted blue button">COMPLETED</button>-->
+                <!--                </div>-->
+                <!--                <div class="column">-->
+                <!--                        <a class="nav-link" id="incomplete-btn">INCOMPLETED</a>-->
+                <!--                    <button id="incomplete-btn" class=" ui inverted blue button">INCOMPLETED</button>-->
+                <!--                </div>-->
+                <div class="column">
+                    <!--                    <div class="container-fluid text-center glyphicon-align-center" style="margin-bottom: 10px">-->
+                    <button id="get" class=" ui blue button">Get Items</button>
                 </div>
-                <div id="edit_form"></div>
+                <div class="column">
+                    <button id="add_module" class="ui blue button">Add Module</button>
+                </div>
+                <div class="column">
+                    <button id="add" class=" ui blue button">Add Item</button>
+                </div>
+                <div class="logout column">
+                    <a href="/logout" class="ui red button">
+                        Logout
+                    </a>
+                </div>
+                <div class="ui floating labeled icon dropdown button" id="filter" tabindex="0">
+                    <i class="filter icon"></i>
+                    <span class="text">Filter</span>
+                    <div class="menu transition hidden" tabindex="-1">
+                        <div class="header">
+                            <i class="tags icon"></i>
+                            Filter by tag
+                        </div>
+                        <div class="item">
+                            ALL
+                        </div>
+                        <div class="item">
+                            COMPLETED
+                        </div>
+                        <div class="item">
+                            NOT COMPLETED
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-
+        <div id="todo_list" class="ui grid"></div>
+        <div id="edit_form"></div>
     </div>
+
+</div>
+
 </div>
 <script src="{{url_for('static', filename='js/todo.js')}}"></script>
 

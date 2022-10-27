@@ -1,14 +1,20 @@
 from flask import request
 from app.api import api
-from app.models import Item
+from app.models import Item, User, Module
 import datetime
 from app import db
 import json
+import hashlib
+from flask_login import login_required, current_user
+from .form import ItemForm, EditForm, ModuleForm
 
 
 def debug_init():
     from app.models import User, Item
     db.create_all()
+    user_1 = User(username='user1',
+                  password=hashlib.sha256('password'.encode('utf-8')).hexdigest(),
+                  email="localhost@localhost")
     item_1 = Item(title='item 1', description='item 1 description',
                   date=datetime.datetime.now(), user_id=1, completed=False,
                   completed_date=None)
@@ -18,7 +24,7 @@ def debug_init():
     item_3 = Item(title='item 3', description='item 3 description',
                   date=datetime.datetime.now(), user_id=1, completed=False,
                   completed_date=None)
-
+    db.session.add(user_1)
     db.session.add(item_1)
     db.session.add(item_2)
     db.session.add(item_3)
@@ -26,15 +32,18 @@ def debug_init():
 
 
 @api.route('/')
+@login_required
 def hello_world():  # put application's code here
     debug_init()
     return 'Hello World!'
 
 
 @api.route('/todo', methods=['GET', 'POST'])
+@login_required
 def todo():
     if request.method == 'GET':
-        items = Item.query.all()
+        items = Item.query.filter_by(user_id=current_user.id).all()
+        # items = Item.query.all()
         return json.dumps({
             'status': 'success',
             'message': 'item pulled',
@@ -42,13 +51,14 @@ def todo():
     elif request.method == 'POST':
         if_complete = request.form.get('completed')
         order = request.form.get('order')
+        item_module_id = request.form.get('module_id')
 
         if if_complete == 'true':
-            items = Item.query.filter_by(completed=True).all()
+            items = Item.query.filter_by(completed=True, user_id=current_user.id).all()
         elif if_complete == 'false':
-            items = Item.query.filter_by(completed=False).all()
+            items = Item.query.filter_by(completed=False, user_id=current_user.id).all()
         else:
-            items = Item.query.all()
+            items = Item.query.filter_by(user_id=current_user.id).all()
 
         if order == 'asc':
             items = sorted(items, key=lambda item: item.date)
@@ -57,6 +67,9 @@ def todo():
         else:
             pass
 
+        if item_module_id is not None:
+            items = [item for item in items if item.module_id == item_module_id]
+
         return json.dumps({
             'status': 'success',
             'message': 'item pulled',
@@ -64,54 +77,67 @@ def todo():
     else:
         # return {'error': 'Method not allowed'}, 405
         # return json.dumps({'error': 'Method not allowed'}), 405
-        return {
-                   'status': 'error',
-                   'message': 'Method not allowed'
-               }, 405
+        return json.dumps({
+            'status': 'error',
+            'message': 'Method not allowed'
+        })
 
 
-@api.route('/todo/<int:id>')
+@api.route('/todo/<int:item_id>')
+@login_required
 def todo_id(item_id):
-    item = Item.query.get(item_id)
-    return item.__json__()
+    item = Item.query.filter_by(id=item_id, user_id=current_user.id).first()
+    return json.dumps({
+        'status': 'success',
+        'message': 'item pulled',
+        'item': item.__json__()})
 
 
 @api.route('/add', methods=['POST'])
+@login_required
 def add():
-    title = request.form['title']
-    description = request.form['description']
-    date = request.form['date']
-    try:
-        date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
-    except ValueError:
-        return {
-                   'status': 'error',
-                   'message': 'date format error'
-               }, 400
-    user_id = 1
-    completed = False
-    completed_date = None
-    item = Item(title=title, description=description, date=date,
-                user_id=user_id, completed=completed,
-                completed_date=completed_date)
-    try:
-        db.session.add(item)
-        db.session.commit()
-        return {
-                   'status': 'success',
-                   'message': 'item added'
-               }, 201
-    except Exception as e:
-        return {
-                   'status': 'error',
-                   'message': str(e)
-               }, 400
+    form = ItemForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        description = form.description.data
+        date = form.date.data
+        module_id = form.module_id.data
+        try:
+            date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
+        except ValueError:
+            return {
+                'status': 'error',
+                'message': 'Date format error',
+                'date': date
+            }
+        item = Item(title=title, description=description, date=date, user_id=current_user.id,
+                    module_id=module_id)
+        item.completed = False
+        item.completed_date = None
+        try:
+            db.session.add(item)
+            db.session.commit()
+        except Exception as e:
+            return json.dumps({
+                'status': 'error',
+                'message': 'Database error'
+            })
+        return json.dumps({
+            'status': 'success',
+            'message': 'item added'
+        })
+    else:
+        return json.dumps({
+            'status': 'error',
+            'message': 'Form validation error'
+        })
 
 
 @api.route('/delete', methods=["POST"])
+@login_required
 def delete():
     item_id = request.form.get("id")
-    item = Item.query.filter_by(id=item_id).first()
+    item = Item.query.filter_by(id=item_id, user_id=current_user.id).first()
     db.session.delete(item)
     db.session.commit()
     return json.dumps({
@@ -122,9 +148,10 @@ def delete():
 
 
 @api.route('/update', methods=['POST'])
+@login_required
 def update():
     item_id = request.form['id']
-    item = Item.query.filter_by(id=item_id).first()
+    item = Item.query.filter_by(id=item_id, user_id=current_user.id).first()
     if item is None:
         return json.dumps({
             'status': 'error',
@@ -142,9 +169,10 @@ def update():
 
 
 @api.route('/complete', methods=['POST'])
+@login_required
 def complete():
     item_id = request.form['id']
-    item = Item.query.filter_by(id=item_id).first()
+    item = Item.query.filter_by(id=item_id, user_id=current_user.id).first()
     if item is None:
         return json.dumps({
             'status': 'error',
@@ -168,29 +196,12 @@ def complete():
         })
 
 
-@api.route('/incomplete')
-def incomplete():
-    item_id = request.args.get('id')
-    item = Item.query.filter_by(id=item_id).first()
-    if item is None:
-        return json.dumps({
-            'status': 'error',
-            'message': 'item not found'
-        })
-    item.completed = False
-    item.completed_date = None
-    db.session.commit()
-    return json.dumps({
-        'status': 'success',
-        'message': 'item marked as incomplete'
-    })
-
-
 @api.route('/statistics')
+@login_required
 def statistics():
-    total = Item.query.count()
-    completed = Item.query.filter_by(completed=True).count()
-    incomplete1 = Item.query.filter_by(completed=False).count()
+    total = Item.query.filter_by(user_id=current_user.id).count()
+    completed = Item.query.filter_by(completed=True, user_id=current_user.id).count()
+    incomplete1 = Item.query.filter_by(completed=False, user_id=current_user.id).count()
     return json.dumps({
         'status': 'success',
         'message': 'statistics pulled',
@@ -204,8 +215,9 @@ def statistics():
 
 
 @api.route('/recent')
+@login_required
 def recent():
-    items = Item.query.order_by(Item.date.desc()).limit(1).all()
+    items = Item.query.filter_by(user_id=current_user.id).order_by(Item.date.desc()).limit(1).all()
     return json.dumps({
         'status': 'success',
         'message': 'recent items pulled',
@@ -214,22 +226,72 @@ def recent():
 
 
 @api.route("/edit", methods=["POST"])
+@login_required
 def edit():
-    item_id = request.form.get("id")
-    item = Item.query.filter_by(id=item_id).first()
-    item.title = request.form.get("title")
-    item.description = request.form.get("description")
-    date = request.form.get("date")
-    try:
-        date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
-    except ValueError:
-        return {
-                   'status': 'error',
-                   'message': 'date format error'
-               }, 400
-    item.date = date
-    db.session.commit()
+    form = EditForm()
+    if form.validate_on_submit():
+        item_id = form.id.data
+        title = form.title.data
+        description = form.description.data
+        date = form.date.data
+        try:
+            date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
+        except ValueError:
+            return json.dumps({
+                'status': 'error',
+                'message': 'Date format error',
+                'date': date
+            })
+
+        item = Item.query.filter_by(id=item_id, user_id=current_user.id).first()
+        item.title = title
+        item.description = description
+        item.date = date
+        db.session.commit()
+        return json.dumps({
+            'status': 'success',
+            'message': 'item edited'
+        })
+    else:
+        return json.dumps({
+            'status': 'error',
+            'message': 'Form validation error'
+        })
+
+
+@api.route("/module", methods=["GET"])
+@login_required
+def get_modules():
+    modules = Module.query.filter_by(user_id=current_user.id).all()
     return json.dumps({
         'status': 'success',
-        'message': 'item updated'
+        'modules': [i.__json__() for i in modules]
     })
+
+
+@api.route("/add_module", methods=['POST'])
+@login_required
+def add_module():
+    form = ModuleForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        # check if module exists
+        module = Module.query.filter_by(name=name, user_id=current_user.id).first()
+        if module is not None:
+            return json.dumps({
+                'status': 'error',
+                'message': 'Module already exists'
+            })
+        module = Module(name=name, user_id=current_user.id)
+        try:
+            db.session.add(module)
+            db.session.commit()
+        except Exception as e:
+            return json.dumps({
+                'status': 'error',
+                'message': 'Database error'
+            })
+        return json.dumps({
+            'status': 'success',
+            'message': 'module added'
+        })
