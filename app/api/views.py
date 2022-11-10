@@ -110,6 +110,14 @@ def add():
                 'message': 'Date format error',
                 'date': date
             }
+        if Module.query.filter_by(name=module_id).first() is None:
+            # CREATE A NEW MODULE
+            module = Module(name=module_id, user_id=current_user.id)
+            db.session.add(module)
+            db.session.commit()
+            module_id = module.id
+        else:
+            module_id = Module.query.filter_by(name=module_id).first().id
         item = Item(title=title, description=description, date=date, user_id=current_user.id,
                     module_id=module_id)
         item.completed = False
@@ -138,8 +146,17 @@ def add():
 def delete():
     item_id = request.form.get("id")
     item = Item.query.filter_by(id=item_id, user_id=current_user.id).first()
+    module = Module.query.filter_by(id=item.module_id).first()
+    module_id = module.id
+
     db.session.delete(item)
     db.session.commit()
+
+    items = Item.query.filter_by(module_id=module_id).all()
+    if len(items) == 0:
+        db.session.delete(module)
+        db.session.commit()
+
     return json.dumps({
         'status': 'success',
         'message': 'item deleted'
@@ -155,7 +172,7 @@ def update():
     if item is None:
         return json.dumps({
             'status': 'error',
-            'message': 'item not found'
+            'message': 'Item not found'
         })
     item.title = request.form['title']
     item.description = request.form['description']
@@ -164,7 +181,7 @@ def update():
     db.session.commit()
     return json.dumps({
         'status': 'success',
-        'message': 'item updated'
+        'message': 'Item updated'
     })
 
 
@@ -176,7 +193,7 @@ def complete():
     if item is None:
         return json.dumps({
             'status': 'error',
-            'message': 'item not found'
+            'message': 'Item not found'
         })
     if item.completed:
         item.completed = False
@@ -184,7 +201,7 @@ def complete():
         db.session.commit()
         return json.dumps({
             'status': 'success',
-            "message": "item set to incomplete"
+            "message": "Item set to incomplete"
         })
     else:
         item.completed = True
@@ -192,7 +209,7 @@ def complete():
         db.session.commit()
         return json.dumps({
             "status": "success",
-            "message": "item set to completed"
+            "message": "Item set to completed"
         })
 
 
@@ -234,23 +251,31 @@ def edit():
         title = form.title.data
         description = form.description.data
         date = form.date.data
+        module_name = form.module_id.data
         try:
             date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
         except ValueError:
             return json.dumps({
                 'status': 'error',
                 'message': 'Date format error',
-                'date': date
             })
-
+        module = Module.query.filter_by(name=module_name).first()
+        if module is None:
+            module = Module(name=module_name, user_id=current_user.id)
+            db.session.add(module)
+            db.session.commit()
+            module_id = module.id
+        else:
+            module_id = module.id
         item = Item.query.filter_by(id=item_id, user_id=current_user.id).first()
         item.title = title
         item.description = description
         item.date = date
+        item.module_id = module_id
         db.session.commit()
         return json.dumps({
             'status': 'success',
-            'message': 'item edited'
+            'message': 'Item edited'
         })
     else:
         return json.dumps({
@@ -293,5 +318,5 @@ def add_module():
             })
         return json.dumps({
             'status': 'success',
-            'message': 'module added'
+            'message': 'Module added'
         })

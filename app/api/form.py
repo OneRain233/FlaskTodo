@@ -8,7 +8,7 @@ class ItemForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
     description = StringField('description', validators=[DataRequired()])
     date = StringField('date', validators=[DataRequired()])
-    module_id = IntegerField('module_id', validators=[DataRequired()])
+    module_id = StringField('module_id', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 
@@ -17,6 +17,7 @@ class EditForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
     description = StringField('description', validators=[DataRequired()])
     date = StringField('date', validators=[DataRequired()])
+    module_id = StringField('module_id', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 

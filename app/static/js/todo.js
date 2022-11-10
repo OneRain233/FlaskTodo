@@ -7,9 +7,9 @@ function update_statistic() {
     $.ajax({
         url: "/api/statistics", type: "get", success: function (data) {
             data = JSON.parse(data);
-            $("#total-items.value").html(data.data.total);
-            $("#completed-items.value").html(data.data.completed);
-            $("#incomplete-items.value").html(data.data.incomplete);
+            $("#total-items").html(data.data.total);
+            $("#completed-items").html(data.data.completed);
+            $("#incomplete-items").html(data.data.incomplete);
         }
     });
 }
@@ -68,9 +68,10 @@ function getItems(flag, module = null) {
     $("#todo_list").html("");
     $("#edit_form").html("");
     $("#add-form-placeholder").html("");
+    $(".modal").remove();
     $.ajax({
         url: "/api/todo", type: "post", data: {
-            "completed": completed, "order": "desc", "csrf_token": get_csrf_token()
+            "completed": completed, "order": "asc", "csrf_token": get_csrf_token()
         }, success: function (data) {
             console.log(data);
             data = JSON.parse(data);
@@ -79,10 +80,11 @@ function getItems(flag, module = null) {
             }
             var items = data.items;
             var html = "";
+            let cnt = 0;
             for (var i = 0; i < items.length; i++) {
                 var item = JSON.parse(items[i]);
                 console.log(item);
-                if(item.module_name !== module && module !== null){
+                if (item.module_name !== module && module !== null) {
                     continue;
                 }
                 var new_element = document.createElement("li");
@@ -136,16 +138,27 @@ function getItems(flag, module = null) {
                                 
 
                             </div>
-                             <div class="ui container stackable">
-                                <div class="ui three demo buttons">
-                                  <button class="ui button delete" id="${item.id}"><i class=" trash icon "></i></button>
-                                  <button class="ui button edit blue" id="${item.id}"><i class=" pencil icon "></i></button>
-                                  <button class="ui button complete ${item.completed === true ? "olive" : "green"}" id="${item.id}">${item.completed === true ? "☒" : "☑"}</button>
+<!--                             <div class="ui container fluid">-->
+                                <div class="ui three item borderless menu fluid">
+                                    <div class="item">
+                                      <button class="ui button fluid delete" id="${item.id}"><i class=" trash icon "></i></button>
+                                    </div>
+                                    <div class="item">
+                                  <button class="ui button fluid edit  blue" id="${item.id}"><i class=" pencil icon "></i></button>
+                                  </div>
+                                  <div class="item">
+                                  <button class="ui button fluid complete ${item.completed === true ? "olive" : "green"}" id="${item.id}">${item.completed === true ? "☒" : "☑"}</button>
+                                  </div>
                                 </div>
-                            </div>
+<!--                            </div>-->
 
                         </div>
             </div> `);
+                cnt += 1;
+
+            }
+            if (cnt === 0) {
+                create_notice("No items found");
 
             }
 
@@ -156,7 +169,7 @@ function getItems(flag, module = null) {
 
 $('.ui.dropdown#filter')
     .dropdown({
-        action: 'hide', onChange: function (value, text, $selectedItem) {
+        onChange: function (value, text, $selectedItem) {
             console.log(value);
             // console.log($selectedItem);
             if (value === "All") {
@@ -171,7 +184,13 @@ $('.ui.dropdown#filter')
 
         },
     });
-;
+
+
+$(".todo-sidebar-button").click(function () {
+    $('.ui.sidebar')
+        .sidebar("setting", "dimPage", false)
+        .sidebar('toggle');
+});
 
 
 $(document).on("click", ".todo-card", function () {
@@ -185,9 +204,11 @@ $(document).on("click", ".todo-card", function () {
             }
             var item = JSON.parse(data.item);
 
-
-            $("#detail-placeholder").html(`
-                <div class="ui modal" id="details">
+            $('.ui.sidebar')
+                .sidebar("setting", "dimPage", false)
+                .sidebar('toggle');
+            $("#detail-placeholder").append(`
+                <div class="ui modal tiny" id="details">
                         <div class="ui icon header">
                             <h2>Details</h2>
                         </div>
@@ -208,6 +229,7 @@ $(document).on("click", ".todo-card", function () {
             
                     </div>
             `);
+
             $(".ui.modal#details").modal("show");
 
         }
@@ -216,8 +238,12 @@ $(document).on("click", ".todo-card", function () {
 })
 
 $(document).on("click", "#add_module", function () {
-    $("#add-module-placeholder").html(`
-        <div class="ui fullscreen modal add-module-form">
+    $(".modal").remove();
+    $('.ui.sidebar')
+        .sidebar("setting", "dimPage", false)
+        .sidebar('toggle');
+    $("#add-module-placeholder").append(`
+        <div class="ui modal tiny add-module-form">
                 <div class="ui icon header">
                     <h2>Add Module</h2>
                 </div>
@@ -234,13 +260,64 @@ $(document).on("click", "#add_module", function () {
     
             </div>
     `)
-    $(".ui.fullscreen.modal.add-module-form").modal("show");
+
+    $(".ui.modal.add-module-form").modal("show");
+});
+
+$(document).on("click", "#statics", function () {
+    $(".modal").remove();
+    $('.ui.sidebar')
+        .sidebar("setting", "dimPage", false)
+        .sidebar('toggle');
+    $.ajax({
+        url: "/api/statistics", type: "get", success: function (data) {
+            data = JSON.parse(data);
+            $("#total-items").html();
+            $("#completed-items").html(data.data.completed);
+            $("#incomplete-items").html(data.data.incomplete);
+            $("#statics-placeholder").append(`
+                        <div class="ui modal tiny aligned center">
+                            <div class="ui center aligned segment ">
+                                  <div class="ui statistic">
+                                    <div class="value" id="total-items">
+                                      ${data.data.total}
+                                    </div>
+                                    <div class="label">
+                                      Total Items
+                                    </div>
+                                  </div>
+                                  <div class="ui green statistic">
+                                    <div class="value"  id="completed-items">
+                                        ${data.data.completed}
+                                    </div>
+                                    <div class="label">
+                                        Completed Items
+                                    </div>
+                                  </div>
+                                  <div class="ui red statistic">
+                                    <div class="value" id="incomplete-items">
+                                        ${data.data.incomplete}
+                                    </div>
+                                    <div class="label">
+                                        Incomplete Items
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                        
+                   `);
+
+            $(".ui.modal").modal("show");
+        }
+    });
+
+
 });
 
 $(document).on("click", ".add-module-submit", function () {
     let name = $("#module-name").val();
     add_module(name);
-    $(".ui.fullscreen.modal.add-module-form").modal("hide");
+    $(".ui.modal.add-module-form").modal("hide");
     // remove all options
     $("#add-module-placeholder").html("");
     $(".modal").html("");
@@ -269,13 +346,22 @@ $(document).on("click", "#add", function () {
     var modulesSelectItem = "";
     for (var j = 0; j < modules.length; j++) {
         var m = JSON.parse(modules[j]);
-        modulesSelectItem += `<option value="${m.id}">${m.name}</option>`;
+        modulesSelectItem += `<option value="${m.name}">${m.name}</option>`;
     }
+    // <div className="field">
+    //     <lable className="card-header" htmlFor="module_id">Module</lable>
+    //     <select name="module-id" id="module-id">
+    //         ${modulesSelectItem}
+    //     </select>
+    // </div>
     console.log(modulesSelectItem);
-    $("#add-form-placeholder").html(`
-        <div class="ui fullscreen modal add-form">
+    $('.ui.sidebar')
+        .sidebar("setting", "dimPage", false)
+        .sidebar('toggle');
+    $("#add-form-placeholder").append(`
+        <div class="ui modal tiny add-form">
                 <div class="ui icon header">
-                    <h2>Edit Item</h2>
+                    <h2>Add Item</h2>
                 </div>
                 <div class="content">
     
@@ -288,28 +374,15 @@ $(document).on("click", "#add", function () {
                             <label class="card-header" for="description">Description</label>
                             <input type="text" name="description" id="description-add" placeholder="Description">
                         </div>
-                        <div class="field">
-                            <label class="card-header" for="date">Date</label>
-                            <input type="date" name="date" id="date-add" placeholder="Date">
-                        </div>
+                        
                         <div class="field">
                             <lable class="card-header" for="module_id">Module</lable>
-                            <select name="module-id" id="module-id">
-                                ${modulesSelectItem}
-                            </select>
+                            <input type="text" name="module-id" id="module-id" placeholder="Module Name">
                         </div>
                         <div class="field">
-                            <label class="card-header" for="date">Time</label>
-                            <div class="ui input left icon">
-                                <select name="hour" id="hour-add">
-                                       ${hourSelectItems}
-                                </select>
-                                <select name="minute" id="minute-add">
-                                          ${minuteSelectItems}
-                                </select>
-                            </div>
-    
-                        </div>
+                            <lable class="card-header" for="datetime">Datetime</lable>
+                          <input type="hidden" id="datetimepkr">
+                        </div> 
                         <button class="ui button add-submit" type="submit">Submit</button>
                     </div>
                 </div>
@@ -318,27 +391,35 @@ $(document).on("click", "#add", function () {
     
     
     `);
+    let datepicker = $('#datetimepkr').flatpickr({
+        enableTime: true, dateFormat: "Y-m-d H:i", time_24hr: true,
+
+    });
+
     $(".ui.modal.add-form").modal("show");
+
 });
 
 
 $(document).on("click", ".add-submit", function () {
+    let datetime = $("#datetimepkr").val();
+
+    console.log(datetime);
     let title = $("#title-add").val();
     let description = $("#description-add").val();
     let date = $("#date-add").val();
     let hour = $("#hour-add").val();
     let minute = $("#minute-add").val();
-    let date_time = date + " " + hour + ":" + minute;
     let module_id = $("#module-id").val();
-    console.log(title, description, date_time);
+    console.log(title, description, datetime);
 
-    console.log(date_time);
+    console.log(datetime);
     $.ajax({
         url: "/api/add", type: "post", data: {
             "module_id": module_id,
             "title": title,
             "description": description,
-            "date": date_time,
+            "date": datetime,
             "csrf_token": get_csrf_token()
         }, success: function (data) {
             console.log(data);
@@ -347,8 +428,7 @@ $(document).on("click", ".add-submit", function () {
                 alert(data.message);
             }
             $(".ui.modal.add-form").modal("hide");
-            getItems(1);
-            update_statistic();
+            update_all();
         }
     });
 
@@ -379,6 +459,7 @@ $(document).on("click", ".edit", function () {
                 var time = datetime.split(" ")[1];
                 var hour = time.split(":")[0];
                 var minute = time.split(":")[1];
+                var module_id = item.module_name;
 
                 var hourSelectItems = "";
                 for (var j = 0; j < 24; j++) {
@@ -391,7 +472,7 @@ $(document).on("click", ".edit", function () {
                 $(".edit-" + item.id).remove();
 
                 $("#edit_form").append(`
-                <div class="ui fullscreen modal edit-${item.id}">
+                <div class="ui modal tiny edit-${item.id}">
                 <div class="ui icon header">
                     <h2>Edit Item</h2>
                 </div>
@@ -407,27 +488,22 @@ $(document).on("click", ".edit", function () {
                             <input type="text" name="description" id="description-${item.id}" placeholder="Description" value="${description}">
                         </div>
                         <div class="field">
-                            <label class="card-header" for="date">Date</label>
-                            <input type="date" name="date" id="date-${item.id}" placeholder="Date" value="${date}">
+                            <lable class="card-header" for="module_id">Module</lable>
+                            <input type="text" name="module-id" id="module-id-${item.id}" placeholder="Module Name" value="${module_id}">
                         </div>
                         <div class="field">
-                            <label class="card-header" for="date">Time</label>
-                            <div class="ui input left icon">
-                                <select name="hour" id="hour-${item.id}">
-                                       ${hourSelectItems}
-                                </select>
-                                <select name="minute" id="minute-${item.id}">
-                                          ${minuteSelectItems}
-                                </select>
-                            </div>
-    
+                          <lable class="card-header" for="datetime">Datetime</lable>
+                          <input type="hidden" id="datetimepkr" value="${datetime}">
                         </div>
                         <button class="ui button edit-submit" type="submit" id="${item.id}">Submit</button>
                     </div>
                 </div>
     
             </div>`);
+                let datepicker = $('#datetimepkr').flatpickr({
+                    enableTime: true, dateFormat: "Y-m-d H:i", time_24hr: true,
 
+                });
                 $(".edit-" + item.id).modal("show");
             }
         }
@@ -439,14 +515,17 @@ $(document).on("click", ".edit-submit", function () {
     var id = $(this).attr("id");
     var title = $("#title-" + id).val();
     var description = $("#description-" + id).val();
-    var date = $("#date-" + id).val();
-    var hour = $("#hour-" + id).val();
-    var minute = $("#minute-" + id).val();
-    var datetime = date + " " + hour + ":" + minute;
+    var datetime = $("#datetimepkr").val();
+    var module_id = $("#module-id-" + id).val();
     // /api/edit
     $.ajax({
         url: "/api/edit", type: "post", data: {
-            "id": id, "title": title, "description": description, "date": datetime, "csrf_token": get_csrf_token()
+            "id": id,
+            "title": title,
+            "description": description,
+            "date": datetime,
+            "csrf_token": get_csrf_token(),
+            "module_id": module_id
         }, success: function (data) {
             data = JSON.parse(data);
             if (data.status !== "success") {
@@ -491,11 +570,10 @@ $(function () {
 function update_all() {
     getItems(1);
     update_statistic();
+    update_module();
 }
 
-// onload
-$(function () {
-    update_all();
+function update_module() {
     var modules = getModules();
     for (var i = 0; i < modules.length; i++) {
         modules[i] = JSON.parse(modules[i]);
@@ -507,12 +585,28 @@ $(function () {
     var moduleSelectItems = []; //{ values: [ {value, text, name} ] }.
     for (var i = 0; i < modules.length; i++) {
         moduleSelectItems.push({value: modules[i].name, text: modules[i].name, name: modules[i].name});
+        // if (modules[i].name !== "All" && modules[i].name !== "Completed" && modules[i].name !== "Uncompleted") {
+        //     moduleSelectItems.push({value: modules[i].name, text: "Module: " + modules[i].name, name: modules[i].name});
+        // } else {
+        //
+        // }
+
     }
 
 
     $('.ui.dropdown#filter').dropdown("setup menu", {
         "values": moduleSelectItems
     });
+}
+
+// onload
+$(function () {
+    update_all();
+
+
+    // $('.ui.sidebar')
+    //     .sidebar("setting", "dimPage", false)
+    //     .sidebar('toggle');
 })
 
 $(document).on("click", ".complete", function () {
@@ -569,7 +663,7 @@ $(document).on("click", ".delete", function () {
 
 
 $(document).on("click", ".edit", function () {
-    $('.ui.fullscreen.modal.edit-' + $(this).attr("id")).modal('show');
+    $('.ui.modal.edit-' + $(this).attr("id")).modal('show');
 });
 
 $(document).on("click", "#all-btn", function () {

@@ -24,56 +24,88 @@
     />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    <!--    Time picker-->
-    <!--    <script src="https://cdn.tailwindcss.com"></script>-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script src="{{ url_for('static', filename='js/anime.min.js') }}"></script>
+
 </head>
 <body>
-<div class="ui">
-    <div class="ui inverted menu text-capitalize">
-        <div class="active item">INDEX</div>
-        <a class="item">Statics</a>
-        <div class="right menu">
-            <div class="item">
-                <div class="ui action left icon input">
-                    <i class="search icon"></i>
-                    <input type="text" placeholder="Search">
-                    <button class="ui button">Submit</button>
+<div class="ui vertical inverted thin sidebar menu left" id="todo-sidebar">
+    <div class="item">
+        <h2>Todo List</h2>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="ui item">
+        <p>
+            {{ current_user.username }}
+        </p>
+    </div>
+    {% endif %}
+    <div class="item ">
+        <!--                    <div class="container-fluid text-center glyphicon-align-center" style="margin-bottom: 10px">-->
+        <button id="get" class=" ui blue button fluid">Get Items</button>
+    </div>
+    <div class="item">
+        <button id="add_module" class="ui blue button fluid">Add Module</button>
+    </div>
+    <div class="item">
+        <button id="add" class=" ui blue button fluid">Add Item</button>
+    </div>
+    <div class="item">
+        <button id="statics" class="ui blue button fluid">Show statics</button>
+    </div>
+    <div class="logout item">
+        <a href="/logout" class="ui red button fluid">
+            Logout
+        </a>
+    </div>
+    <!--    <div class="item">-->
+    <!--        <div class="ui floating labeled icon dropdown button fluid" id="filter" tabindex="0">-->
+    <!--            <i class="filter icon"></i>-->
+    <!--            <span class="text">Filter</span>-->
+    <!--            <div class="menu transition hidden" tabindex="-1">-->
+    <!--                <div class="header">-->
+    <!--                    <i class="tags icon"></i>-->
+    <!--                    Filter by tag-->
+    <!--                </div>-->
+    <!--                <div class="item">-->
+    <!--                    ALL-->
+    <!--                </div>-->
+    <!--                <div class="item">-->
+    <!--                    COMPLETED-->
+    <!--                </div>-->
+    <!--                <div class="item">-->
+    <!--                    NOT COMPLETED-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    {% block navbar %}
+    {% endblock %}
+</div>
+<div class="ui pusher">
+    <div class="ui">
+        <div class="ui masthead vertical segment">
+            <div class="ui container">
+                <div class="introduction">
+                    <h1 class="ui center aligned header">TODO LIST</h1>
                 </div>
             </div>
-            <div class="ui dropdown item" tabindex="0">
-                Dropdown Left<i class="dropdown icon"></i>
-                <div class="menu" tabindex="-1">
-                    <a class="item">Link</a>
-                    <a class="item">Link</a>
-                    <div class="divider"></div>
-                    <div class="header">Header</div>
-                    <div class="item">
-                        <i class="dropdown icon"></i>
-                        Sub Menu
-                        <div class="menu">
-                            <a class="item">Link</a>
-                            <div class="item">
-                                <i class="dropdown icon"></i>
-                                Sub Sub Menu
-                                <div class="menu">
-                                    <a class="item">Link</a>
-                                    <a class="item">Link</a>
-                                </div>
-                            </div>
-                            <a class="item">Link</a>
-                        </div>
-                    </div>
-                    <a class="item">Link</a>
-                </div>
-            </div>
-            <a class="item">Link</a>
+
+        </div>
+        <br/>
+
+        <div class="ui sticky black launch right attached bottom right fixed button todo-sidebar-button">
+            <i class="content icon"></i>
         </div>
     </div>
-    <br/>
+    {% block content %}
+    {% endblock %}
+
 </div>
-{% block content %}
-{% endblock %}
+
+
 </body>
 </html>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

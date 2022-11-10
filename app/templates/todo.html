@@ -1,99 +1,47 @@
 {% extends "base.html" %}
 
+{% block navbar %}
+
+
+{% endblock %}
+
+
 {% block content %}
+<div class="ui container" id="add-form-placeholder"></div>
+<div class="ui container" id="add-module-placeholder"></div>
+<div class="ui container" id="detail-placeholder"></div>
+<div class="ui container" id="statics-placeholder"></div>
+
+
 <div class="ui container">
     <div class="ui container">
-        <div class="ui container" id="add-form-placeholder"></div>
-        <div class="ui container" id="add-module-placeholder"></div>
-        <div class="ui container" id="detail-placeholder"></div>
-        <div class="ui container">
-            <div class="ui three statistics">
-                <div class="red statistic">
-                    <div class="value" id="total-items">
-                        0
-                    </div>
-                    <div class="label">
-                        Total
-                    </div>
-                </div>
-                <div class="green statistic">
-                    <div class="value" id="completed-items">
-                        0
-                    </div>
-                    <div class="label">
-                        Completed
-                    </div>
-                </div>
-                <div class="blue statistic">
-                    <div class="value" id="incomplete-items">
-                        0
-                    </div>
-                    <div class="label">
-                        Incomplete
-                    </div>
-                </div>
+    <div class="ui floating labeled icon dropdown button float right" id="filter" tabindex="0">
+        <i class="filter icon"></i>
+        <span class="text">Filter</span>
+        <div class="menu transition hidden" tabindex="-1">
+            <div class="header">
+                <i class="tags icon"></i>
+                Filter by tag
             </div>
-
-        </div>
-        <div class="ui container todolist-container">
-            <div class="ui attached buttons">
-                <!--                <div class="ui card">-->
-                <!--                    <div class="card-header">-->
-
-                <!--                <div class="column">-->
-                <!--                        <a class="nav-link active" id="all-btn">ALL</a>-->
-                <!--                    <button id="all-btn" class=" ui inverted blue button">ALL</button>-->
-                <!--                </div>-->
-                <!--                <div class="column">-->
-                <!--                        <a class="nav-link" id="complete-btn">COMPLETED</a>-->
-                <!--                    <button id="complete-btn" class=" ui inverted blue button">COMPLETED</button>-->
-                <!--                </div>-->
-                <!--                <div class="column">-->
-                <!--                        <a class="nav-link" id="incomplete-btn">INCOMPLETED</a>-->
-                <!--                    <button id="incomplete-btn" class=" ui inverted blue button">INCOMPLETED</button>-->
-                <!--                </div>-->
-                <div class="column">
-                    <!--                    <div class="container-fluid text-center glyphicon-align-center" style="margin-bottom: 10px">-->
-                    <button id="get" class=" ui blue button">Get Items</button>
-                </div>
-                <div class="column">
-                    <button id="add_module" class="ui blue button">Add Module</button>
-                </div>
-                <div class="column">
-                    <button id="add" class=" ui blue button">Add Item</button>
-                </div>
-                <div class="logout column">
-                    <a href="/logout" class="ui red button">
-                        Logout
-                    </a>
-                </div>
-                <div class="ui floating labeled icon dropdown button" id="filter" tabindex="0">
-                    <i class="filter icon"></i>
-                    <span class="text">Filter</span>
-                    <div class="menu transition hidden" tabindex="-1">
-                        <div class="header">
-                            <i class="tags icon"></i>
-                            Filter by tag
-                        </div>
-                        <div class="item">
-                            ALL
-                        </div>
-                        <div class="item">
-                            COMPLETED
-                        </div>
-                        <div class="item">
-                            NOT COMPLETED
-                        </div>
-                    </div>
-                </div>
-
+            <div class="item">
+                ALL
+            </div>
+            <div class="item">
+                COMPLETED
+            </div>
+            <div class="item">
+                NOT COMPLETED
             </div>
         </div>
-        <div id="todo_list" class="ui grid"></div>
+    </div>
+</div>
+    <div class="ui container">
+        <div id="todo_list" class="ui grid stackable"></div>
         <div id="edit_form"></div>
     </div>
+    <div class="ui container">
 
-</div>
+    </div>
 
 </div>
 <script src="{{url_for('static', filename='js/todo.js')}}"></script>
