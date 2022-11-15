@@ -1,0 +1,44 @@
+<div class="ui card">
+    <div class="ui two top attached basic buttons">
+        <div class="ui button">
+            Action 1
+        </div>
+        <div class="ui button">
+            Action 2
+        </div>
+    </div>
+    <div class="content">
+        <img src="../assets/images/wireframe/paragraph.png" class="ui wireframe image">
+    </div>
+    <div class="ui two bottom attached basic buttons">
+        <div class="ui button">
+            Action 3
+        </div>
+        <div class="ui button">
+            Action 4
+        </div>
+    </div>
+</div>
+
+
+<div class="card" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title ${item.completed === true ? " text-success" : "text-danger"}">${item.title}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">${item.date}</h6>
+        <p class="card-text">${item.description}</p>
+        ${item.completed === true ? `
+        <button class="complete" id="${item.id}">Set to NOT DONE</button>
+        ` : `
+        <button class="complete" id="${item.id}">set to DONE</button>
+        `}
+        <button class="delete" id="${item.id}">Delete</button>
+    </div>
+</div>
+
+
+<div class="ui button complete" id="${item.id}">
+    Change status
+</div>
+<div class="ui button delete" id="${item.id}">
+    Delete
+</div>

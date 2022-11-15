@@ -204,9 +204,6 @@ $(document).on("click", ".todo-card", function () {
             }
             var item = JSON.parse(data.item);
 
-            $('.ui.sidebar')
-                .sidebar("setting", "dimPage", false)
-                .sidebar('toggle');
             $("#detail-placeholder").append(`
                 <div class="ui modal tiny" id="details">
                         <div class="ui icon header">
